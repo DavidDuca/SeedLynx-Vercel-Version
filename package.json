@@ -1,0 +1,22 @@
+{
+  "name": "seedlynx",
+  "version": "1.0.0",
+  "description": "Seedlynx landing page + booking system, Vercel serverless + Vercel Postgres.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "vercel": "^39.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

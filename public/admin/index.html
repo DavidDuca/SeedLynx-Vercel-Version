@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seedlynx Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/admin/admin.css"/>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <canvas id="loginCanvas"></canvas>
+  <div class="login-box glass-card">
+    <div class="lb-logo">
+      <svg width="34" height="34" viewBox="0 0 38 38" fill="none"><rect width="38" height="38" rx="9" fill="#0ec4b8"/><path d="M10 28C10 20 15 13 19 13C23 13 28 20 28 28" stroke="#07090f" stroke-width="2.5" stroke-linecap="round"/><path d="M19 13V8" stroke="#07090f" stroke-width="2.5" stroke-linecap="round"/><path d="M19 13C19 13 14 11 12 8" stroke="#07090f" stroke-width="2" stroke-linecap="round"/><path d="M19 13C19 13 22 10 23 7" stroke="#07090f" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Seedlynx</span>
+    </div>
+    <h1>Admin Portal</h1>
+    <p class="lb-sub">Sign in to manage bookings and settings.</p>
+    <form id="loginForm">
+      <div class="lg-group">
+        <label><i class="fa-solid fa-user"></i> Username</label>
+        <input type="text" id="lgUser" placeholder="admin" autocomplete="username" required/>
+      </div>
+      <div class="lg-group">
+        <label><i class="fa-solid fa-lock"></i> Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="lgPass" placeholder="••••••••" autocomplete="current-password" required/>
+          <button type="button" id="pwToggle" aria-label="Show password"><i class="fa-regular fa-eye" id="pwIcon"></i></button>
+        </div>
+      </div>
+      <div class="lg-err" id="lgErr" style="display:none"><i class="fa-solid fa-circle-exclamation"></i><span id="lgErrMsg">Invalid credentials.</span></div>
+      <button type="submit" class="btn-login" id="loginBtn">
+        <span class="btext"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</span>
+        <span class="bload" style="display:none"><i class="fa-solid fa-spinner fa-spin"></i> Signing in...</span>
+      </button>
+    </form>
+    <p class="lb-hint">Default: <code>admin</code> / <code>admin123</code></p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard" style="display:none">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <svg width="30" height="30" viewBox="0 0 38 38" fill="none"><rect width="38" height="38" rx="9" fill="#0ec4b8"/><path d="M10 28C10 20 15 13 19 13C23 13 28 20 28 28" stroke="#07090f" stroke-width="2.5" stroke-linecap="round"/><path d="M19 13V8" stroke="#07090f" stroke-width="2.5" stroke-linecap="round"/><path d="M19 13C19 13 14 11 12 8" stroke="#07090f" stroke-width="2" stroke-linecap="round"/><path d="M19 13C19 13 22 10 23 7" stroke="#07090f" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="sb-brand-text"><span class="sb-name">Seedlynx</span><span class="sb-badge">Admin</span></div>
+    </div>
+    <nav class="sb-nav">
+      <a href="#" class="sb-link active" data-view="overview"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+      <a href="#" class="sb-link" data-view="bookings"><i class="fa-solid fa-calendar-check"></i><span>All Bookings</span></a>
+      <a href="#" class="sb-link" data-view="pending"><i class="fa-regular fa-clock"></i><span>Pending</span><span class="sb-count" id="pendingCount">0</span></a>
+    </nav>
+    <div class="sb-footer">
+      <a href="/" class="sb-link"><i class="fa-solid fa-arrow-left"></i><span>Back to Site</span></a>
+      <button class="sb-link sb-logout" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="sb-toggle" id="sbToggle" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
+        <span class="topbar-title" id="topbarTitle">Overview</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-refresh" id="refreshBtn" title="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+        <div class="admin-chip"><i class="fa-solid fa-user-shield"></i><span>Administrator</span></div>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="view active" id="view-overview">
+      <div class="stats-row">
+        <div class="stat-card glass-card"><div class="sc-icon all"><i class="fa-solid fa-calendar-days"></i></div><div><div class="sc-num" id="sTotal">–</div><div class="sc-label">Total Bookings</div></div></div>
+        <div class="stat-card glass-card"><div class="sc-icon pend"><i class="fa-regular fa-clock"></i></div><div><div class="sc-num" id="sPending">–</div><div class="sc-label">Pending</div></div></div>
+        <div class="stat-card glass-card"><div class="sc-icon conf"><i class="fa-solid fa-circle-check"></i></div><div><div class="sc-num" id="sConf">–</div><div class="sc-label">Confirmed</div></div></div>
+        <div class="stat-card glass-card"><div class="sc-icon canc"><i class="fa-solid fa-ban"></i></div><div><div class="sc-num" id="sCanc">–</div><div class="sc-label">Cancelled</div></div></div>
+      </div>
+      <div class="panel glass-card">
+        <div class="panel-head"><h3>Recent Bookings</h3><button class="btn-link" onclick="switchView('bookings')">View all <i class="fa-solid fa-arrow-right"></i></button></div>
+        <div id="recentWrap"><div class="tbl-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ALL BOOKINGS -->
+    <div class="view" id="view-bookings">
+      <div class="toolbar">
+        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="searchIn" placeholder="Search name or email..."/></div>
+        <select class="filter-sel" id="statusFilter"><option value="">All Statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="cancelled">Cancelled</option></select>
+      </div>
+      <div class="panel glass-card">
+        <div class="tbl-scroll">
+          <table class="data-table" id="allTable">
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Date</th><th>Time</th><th>Service</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="allBody"><tr><td colspan="8" class="tbl-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENDING -->
+    <div class="view" id="view-pending">
+      <div class="panel glass-card">
+        <div class="tbl-scroll">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Date</th><th>Time</th><th>Service</th><th>Actions</th></tr></thead>
+            <tbody id="pendBody"><tr><td colspan="7" class="tbl-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editBg" style="display:none">
+  <div class="modal glass-card">
+    <div class="modal-head"><h3><i class="fa-solid fa-pen"></i> Edit Booking</h3><button class="modal-x" id="editClose"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
+      <div class="m-group"><label>Full Name</label><input type="text" id="editName"/></div>
+      <div class="m-group"><label>Email</label><input type="email" id="editEmail"/></div>
+      <div class="m-row">
+        <div class="m-group"><label>Date</label><input type="date" id="editDate"/></div>
+        <div class="m-group"><label>Time</label><select id="editTime"><option value="09:00">09:00 AM</option><option value="10:00">10:00 AM</option><option value="11:00">11:00 AM</option><option value="13:00">01:00 PM</option><option value="14:00">02:00 PM</option><option value="15:00">03:00 PM</option><option value="16:00">04:00 PM</option></select></div>
+      </div>
+      <div class="m-group"><label>Status</label><select id="editStatus"><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="cancelled">Cancelled</option></select></div>
+      <div class="m-group"><label>Message</label><textarea id="editMsg" rows="3"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn-cancel" id="editCancel">Cancel</button><button class="btn-save" id="editSave"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button></div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-bg" id="delBg" style="display:none">
+  <div class="modal modal-sm glass-card">
+    <div class="modal-head"><h3><i class="fa-solid fa-triangle-exclamation" style="color:#f87171"></i> Delete Booking</h3><button class="modal-x" onclick="closeDelete()"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body"><p>Delete booking for <strong id="delName"></strong>? This cannot be undone.</p></div>
+    <div class="modal-foot"><button class="btn-cancel" onclick="closeDelete()">Cancel</button><button class="btn-del" id="confirmDel"><i class="fa-solid fa-trash"></i> Delete</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/admin/admin.js"></script>
+</body>
+</html>
